@@ -5,17 +5,21 @@
  */
 
 // @lc code=start
-class Solution {
+class Solution
+{
 public:
-    int maxArea(vector<int>& height) {
-        long max_capacity = 0;
-        for (auto left_bound = height.begin(); left_bound != height.end() - 1; left_bound++) {
-            for (auto right_bound = left_bound + 1; right_bound != height.end(); right_bound++) {
-                max_capacity = max(max_capacity, min(*left_bound, *right_bound) * (right_bound - left_bound));
-            }
+    int maxArea(vector<int> &height)
+    {
+        int max_capacity = 0;
+        int i = 0;
+        int j = height.size() - 1;
+        while (i < j)
+        {
+            max_capacity = max(max_capacity, min(height[i], height[j]) * (j - i));
+            bool to_right = height[i] < height[j] ? true : false;
+            to_right ? i++ : j--;
         }
         return max_capacity;
     }
 };
 // @lc code=end
-
