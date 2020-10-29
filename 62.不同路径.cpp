@@ -2,6 +2,7 @@
  * @lc app=leetcode.cn id=62 lang=cpp
  *
  * [62] 不同路径
+ * 超时是应该的，想想m和n较大时，这个栈得有多深
  */
 
 // @lc code=start
