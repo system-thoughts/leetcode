@@ -16,16 +16,19 @@
  */
 class Solution {
 public:
+    bool isRangeValid(TreeNode* root, long long lower, long long upper) {
+        if (root == nullptr)
+            return true;
+
+        if (root->val <= lower || root->val >= upper)
+            return false;
+        return isRangeValid(root->left, lower, root->val) && isRangeValid(root->right, root->val, upper);
+    }
     bool isValidBST(TreeNode* root) {
         if (!root) {
             return true;
         }
-        auto left = root->left;
-        auto right = root->right;
-        if ((left == nullptr || left->val < root->val) && (right == nullptr || right->val > root->val)) {
-            return (left ? isValidBST(left) : true) && (right ? isValidBST(right) : true);
-        }
-        return false;
+        return isRangeValid(root, LONG_MIN, LONG_MAX);
     }
 };
 // @lc code=end
