@@ -7,54 +7,35 @@
 // @lc code=start
 class Solution {
 public:
-    // 如果图中有环，返回true
-    int dfs(int start, const vector<vector<int>>& schedule, vector<int>& visited, unordered_set<int> &order) {
-        // 该节点在其他路径上已经被访问过，该路径上不存在环
-        if (visited[start] == -1) {
-            return start;
-        }
-        // 在当前路径上访问到路径之前的节点，形成环
-        if (visited[start] == 1) {
-            return -1;
-        }
-        visited[start] = 1;
-        int depend = -2;
-        for (const auto & n : schedule[start]) {
-            // 邻接节点触发的路径上形成环
-            depend = dfs(n, schedule, visited, order);
-            if (depend == -1) {
-                return -1;
-            }
-        }
-        // 尚且不在序列里面
-        if (order.count(start) == 0) {
-            auto it = depend == 2 ? order.end() : order.find(depend);
-            order.insert(it, start);
-        }
-        visited[start] = -1;
-        return start;
-    }
     vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
-        vector<vector<int>> schedule(numCourses);
-        vector<int> visited(numCourses, 0);
-        unordered_set<int> order;
-
-        for (const auto & relation : prerequisites) {
-            schedule[relation[0]].push_back(relation[1]);
+        // 构造图
+        vector<vector<int>> graph(numCourses);
+        // 入度表
+        vector<int> inDegree(numCourses);
+        // 入度为0的节点
+        queue<int> q;
+        vector<int> res;
+        for (const auto& p : prerequisites) {
+            graph[p[1]].push_back(p[0]);
+            inDegree[p[0]]++;
         }
         for (int i = 0; i < numCourses; i++) {
-            // 不依赖任何课程，顺序随意
-            if (schedule[i].size() == 0) {
-                order.insert(order.end(), i);
-                continue;
-            }
-            if (dfs(i, schedule, visited, order) == -1) {
-                order.clear();
-                break;
+            if (inDegree[i] == 0)
+                q.push(i);
+        }
+
+        while (!q.empty()) {
+            auto node = q.front();
+            q.pop();
+            res.push_back(node);
+            for (const auto& n : graph[node]) {
+                if (--inDegree[n] == 0)
+                    q.push(n);
             }
         }
-        auto tmp = vector(order.begin(), order.end());
-        return vector(tmp.rbegin(), tmp.rend());
+        if (res.size() != numCourses)
+            res.clear();
+        return res;
     }
 };
 // @lc code=end
